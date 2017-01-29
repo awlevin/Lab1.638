@@ -1,0 +1,30 @@
+// number of features
+7
+
+// feature names and values
+F1 - T F
+F2 - T F
+F3 - T F
+F4 - T F
+F5 - T F
+F6 - T F
+F7 - T F
+
+// labels
+pos
+neg
+
+// number of examples
+10
+
+// examples
+ex114 neg F F F T T T F
+ex83 neg F T F T T F T
+ex73 neg F T T F T T T
+ex12 pos T T T F T F F
+ex108 neg F F T F T F F
+ex47 pos T F T F F F T
+ex11 pos T T T F T F T
+ex8 pos T T T T F F F
+ex115 neg F F F T T F T
+ex22 pos T T F T F T F

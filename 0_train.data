@@ -1,0 +1,120 @@
+// number of features
+7
+
+// feature names and values
+F1 - T F
+F2 - T F
+F3 - T F
+F4 - T F
+F5 - T F
+F6 - T F
+F7 - T F
+
+// labels
+pos
+neg
+
+// number of examples
+100
+
+// examples
+ex89 neg F T F F T T T
+ex102 pos F F T T F T F
+ex78 pos F T T F F T F
+ex123 neg F F F F T F T
+ex32 pos T T F F F F F
+ex113 neg F F F T T T T
+ex103 pos F F T T F F T
+ex107 neg F F T F T F T
+ex92 neg F T F F T F F
+ex82 neg F T F T T T F
+ex26 pos T T F F T T F
+ex84 neg F T F T T F F
+ex122 neg F F F F T T F
+ex95 pos F T F F F F T
+ex30 pos T T F F F T F
+ex84 neg F T F T T F F
+ex117 pos F F F T F T T
+ex91 neg F T F F T F T
+ex2 pos T T T T T T F
+ex96 pos F T F F F F F
+ex98 neg F F T T T T F
+ex24 pos T T F T F F F
+ex89 neg F T F F T T T
+ex98 neg F F T T T T F
+ex82 neg F T F T T T F
+ex82 neg F T F T T T F
+ex38 pos T F T T F T F
+ex74 neg F T T F T T F
+ex84 neg F T F T T F F
+ex84 neg F T F T T F F
+ex126 pos F F F F F T F
+ex89 neg F T F F T T T
+ex21 pos T T F T F T T
+ex106 neg F F T F T T F
+ex100 neg F F T T T F F
+ex27 pos T T F F T F T
+ex9 pos T T T F T T T
+ex34 pos T F T T T T F
+ex77 pos F T T F F T T
+ex97 neg F F T T T T T
+ex79 pos F T T F F F T
+ex90 neg F T F F T T F
+ex124 neg F F F F T F F
+ex105 neg F F T F T T T
+ex80 pos F T T F F F F
+ex123 neg F F F F T F T
+ex74 neg F T T F T T F
+ex4 pos T T T T T F F
+ex105 neg F F T F T T T
+ex125 pos F F F F F T T
+ex16 pos T T T F F F F
+ex35 pos T F T T T F T
+ex5 pos T T T T F T T
+ex76 neg F T T F T F F
+ex70 pos F T T T F T F
+ex60 pos T F F F T F F
+ex51 pos T F F T T F T
+ex107 neg F F T F T F T
+ex81 neg F T F T T T T
+ex98 neg F F T T T T F
+ex98 neg F F T T T T F
+ex62 pos T F F F F T F
+ex127 pos F F F F F F T
+ex91 neg F T F F T F T
+ex120 pos F F F T F F F
+ex112 pos F F T F F F F
+ex29 pos T T F F F T T
+ex100 neg F F T T T F F
+ex74 neg F T T F T T F
+ex64 pos T F F F F F F
+ex84 neg F T F T T F F
+ex69 pos F T T T F T T
+ex81 neg F T F T T T T
+ex57 pos T F F F T T T
+ex67 neg F T T T T F T
+ex121 neg F F F F T T T
+ex93 pos F T F F F T T
+ex106 neg F F T F T T F
+ex124 neg F F F F T F F
+ex58 pos T F F F T T F
+ex121 neg F F F F T T T
+ex109 pos F F T F F T T
+ex31 pos T T F F F F T
+ex23 pos T T F T F F T
+ex41 pos T F T F T T T
+ex56 pos T F F T F F F
+ex44 pos T F T F T F F
+ex48 pos T F T F F F F
+ex97 neg F F T T T T T
+ex49 pos T F F T T T T
+ex99 neg F F T T T F T
+ex100 neg F F T T T F F
+ex87 pos F T F T F F T
+ex113 neg F F F T T T T
+ex91 neg F T F F T F T
+ex84 neg F T F T T F F
+ex122 neg F F F F T T F
+ex36 pos T F T T T F F
+ex101 pos F F T T F T T
+ex55 pos T F F T F F T
