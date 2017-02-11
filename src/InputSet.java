@@ -11,7 +11,9 @@ public class InputSet {
 	public String fileName;
 	public ArrayList<Instance> instances;
 	public HashMap<String, ArrayList<String>> featuresDict;
+	public int numFeatures = 0;
 	public ArrayList<String> labels;
+	public int numLabels = 0;
 
 	private int currLineIndex = 0;
 	private String[] inFileStringArray;
@@ -23,8 +25,8 @@ public class InputSet {
 
 	private ArrayList<Instance> getData(String fileName) {
 		this.inFileStringArray = createStringArrayFromFile(fileName);
-		this.featuresDict = getPossibleFeatures();
-		this.labels = getPossibleLabels();
+		getPossibleFeatures();
+		getPossibleLabels();
 		return getExamples();
 	}
 
@@ -43,147 +45,161 @@ public class InputSet {
 		return inFileStringArray;
 	}
 
-	private HashMap<String,ArrayList<String>> getPossibleFeatures() {
+	private void getPossibleFeatures() {
 
-		//================================================================================
-		// This is the '// number of features' section
-		//================================================================================
+		this.featuresDict = new HashMap<String, ArrayList<String>>();
 
-		// Assert first line of file is what we expect
-		assert(currLineIndex == 0);
-		assert(inFileStringArray[currLineIndex].contains("// number of features")); 
+		// Increment line index until we find number of features comment
+		while(!inFileStringArray[currLineIndex].contains("number of features")) {
+			currLineIndex++;
+		}
+		
+		// Assert current line is what we expect
+		assert(inFileStringArray[currLineIndex].contains("number of features")); 
 
 		// Get number of features
 		int numFeatures = 0;
-		if (inFileStringArray[currLineIndex].contains("// number of features")) {
+		if (inFileStringArray[currLineIndex].contains("number of features")) {
 			currLineIndex++;
 			numFeatures = Integer.parseInt(inFileStringArray[currLineIndex]);
+			currLineIndex++;
 		}
 
 		// If numFeatures is still 0, something went wrong
 		assert(numFeatures != 0);
+		this.numFeatures = numFeatures;
 
 		// Move currLineIndex to next section: '// feature names and values'
-		currLineIndex += 2;
-		assert(currLineIndex == 3);
-
-		//================================================================================
-		// This is the '// feature names and values' section
-		//================================================================================
-
-		// Assert currentLineIndex file contents are what we expect.
-		assert(inFileStringArray[currLineIndex].contains("// feature names and values"));
-
-		// Create a dictionary of features and potential values
-		HashMap<String, ArrayList<String>> featureDict = new HashMap<String, ArrayList<String>>(numFeatures);
-		String[] featureNames = new String[numFeatures];
-		ArrayList<String> featurePotentialValues;
-
-		int featureNumIndex = 0;
-
-		assert(inFileStringArray[currLineIndex].contains("// feature names and values"));
-
-		// Start by incrementing currLineIndex (so it starts on the first feature)
-		// Parse until reaching a line that doesn't start with a feature name
-		for(currLineIndex++; !inFileStringArray[currLineIndex].equals(""); currLineIndex++ ) {
-
-			featurePotentialValues = new ArrayList<String>();
-
-			// Feature Format: FX - T F
-
-			// Contents of 'temp' should be:
-			// index 0: FX
-			// index 1: all the potential values of that feature name
-			String[] temp = inFileStringArray[currLineIndex].split(" - ");
-
-			// Each index of 'temp2' should be a different possible feature value.
-			String[] temp2 = temp[1].split(" ");
-
-			// Iterate through all potential values of this feature
-			for(int i = 0; i < temp2.length; i++) {
-				// temp[0] is the feature name
-				// temp[i] is each possible value of the feature
-				featureNames[featureNumIndex] = temp[0];
-				featurePotentialValues.add(temp2[i]);
+		int featuresObtained = 0;
+		while(featuresObtained < numFeatures) {
+			if(inFileStringArray[currLineIndex].equals("") || 
+					inFileStringArray[currLineIndex].contains("//")){
+				currLineIndex++;
+			} else{
+				this.extractFeature();
+				featuresObtained++;
+				currLineIndex++;
 			}
-			featureDict.put(featureNames[featureNumIndex], featurePotentialValues);
-			featureNumIndex++;
 		}
-		assert(inFileStringArray[currLineIndex].equals(""));
-		this.currLineIndex++; // now points to header of next section
+	}
+	
+	private void extractFeature() {
+		// Create a dictionary of features and potential values
+		String featureName = new String();
+		ArrayList<String> featurePotentialValues = new ArrayList<String>();
 
-		return featureDict;
+		// Feature Format: FX - T F
+
+		// Contents of 'temp' should be:
+		// index 0: FX
+		// index 1: all the potential values of that feature name
+		String[] temp = inFileStringArray[currLineIndex].split(" - ");
+
+		// Each index of 'temp2' should be a different possible feature value.
+		String[] temp2 = temp[1].split(" ");
+
+		// Iterate through all potential values of this feature
+		for(int i = 0; i < temp2.length; i++) {
+			// temp[0] is the feature name
+			// temp[i] is each possible value of the feature
+			featureName = temp[0];
+			featurePotentialValues.add(temp2[i]);
+		}
+		this.featuresDict.put(featureName, featurePotentialValues);
 	}
 
-	private ArrayList<String> getPossibleLabels() {
-
-		assert(inFileStringArray[currLineIndex].contains("// labels"));
-
-		ArrayList<String> labels = new ArrayList<String>();
-
-		// first increment 'currLineIndex' so it points to first label
-		// condition: line is not empty (end of section indicator)
-		for(currLineIndex++; !inFileStringArray[currLineIndex].equals(""); currLineIndex++) {
-			labels.add(inFileStringArray[currLineIndex]);
-		}
+	private void getPossibleLabels() {
+		this.labels = new ArrayList<String>();
 		
-		currLineIndex++; // now points to start of next section
-		return labels;
+		int obtainedLabels = 0;
+		while(obtainedLabels < 2) {
+			if(inFileStringArray[currLineIndex].contains("//") || 
+					inFileStringArray[currLineIndex].equals("")) {
+				currLineIndex++;
+			} else {
+				this.extractLabel();
+				obtainedLabels++;
+				currLineIndex++;
+			}
+		}
+	}
+	
+	private void extractLabel() {
+		labels.add(inFileStringArray[currLineIndex]);
 	}
 
 	// Reads train/tune/test file and gets the list of instances, stored as an ArrayList
 	// Asumes @param fileName is the file listed in the project root directory.
 	private ArrayList<Instance> getExamples() {
-		assert(inFileStringArray[currLineIndex].contains("// number of examples"));
+		int numExamples = 0;
+		while(inFileStringArray[currLineIndex].contains("//") || 
+					inFileStringArray[currLineIndex].equals("")) {
+			
+			if(inFileStringArray[currLineIndex].contains("number of examples")) {
+				currLineIndex++;
+				numExamples = Integer.parseInt(inFileStringArray[currLineIndex]);
+				currLineIndex++;
+				break;
+			}else {
+				currLineIndex++;
+			}
+		}
 		
-		int numExamples = Integer.parseInt(inFileStringArray[++currLineIndex]);
 		ArrayList<Instance> examples = new ArrayList<Instance>(numExamples);
 		
-		currLineIndex += 2;
-		assert(inFileStringArray[currLineIndex].contains("// examples"));
-		currLineIndex++; // now points to first example
-		
-		// Iterate through all examples
-		for(int i = 0; i < numExamples; i++) {
-			
-			/* Contents of 'exampleContents' should be:
-			 * index 0: Example name
-			 * index 1: Label value
-			 * index 2 through N: Feature values
-			 */
-			String[] exampleContents = inFileStringArray[currLineIndex].split(" ");
-			
-			String exampleName = exampleContents[0];
-			String labelValue = exampleContents[1];
-			
-			Instance newInstance = new Instance(exampleName);
-			
-			// Set Instance's Feature Values
-			for(int j = 2; j < exampleContents.length; j++) {
-				String featureValue = exampleContents[j];
-				double valueToAdd = (featureValue.charAt(0) == 'T') ? 1 : 0;
-				newInstance.features.add(j-2, valueToAdd);
+		int examplesObtained = 0;
+		while(examplesObtained < numExamples) {
+			if(inFileStringArray[currLineIndex].contains("//") ||
+					inFileStringArray[currLineIndex].equals("")) {
+				currLineIndex++;
+			} else {
+				examples.add(this.extractExample());
+				examplesObtained++;
+				currLineIndex++;
 			}
-			
-			// Set Instance's Label/Classification Values
-			switch (labelValue) {
-			case "pos":
-				newInstance.labels.add(0, 1);
-				newInstance.labels.add(1, 0);
-				break;
-			case "neg":
-				newInstance.labels.add(0, 0);
-				newInstance.labels.add(1, 1);
-				break;
-			}
-			
-			examples.add(newInstance);
-			
-			currLineIndex++;
 		}
-
-		assert(inFileStringArray[currLineIndex].equals(""));
-
 		return examples;
+	}
+	
+	private Instance extractExample() {
+		/* Contents of 'exampleContents' should be:
+		 * index 0: Example name
+		 * index 1: Label value
+		 * index 2 through N: Feature values
+		 */
+		String[] exampleContents = inFileStringArray[currLineIndex].replaceAll("\\s+", " ").split(" ");
+		
+		
+		// now we have to go through and remove array spaces that are empty
+		
+		String exampleName = exampleContents[0];
+		String labelValue = exampleContents[1];
+		
+		Instance newInstance = new Instance(exampleName);
+		
+		// Set Instance's Feature Values
+		for(int j = 2; j < exampleContents.length; j++) {
+			String featureValue = exampleContents[j];
+			double valueToAdd = (featureValue.charAt(0) == 'T') ? 1 : 0;
+			newInstance.features.add(j-2, valueToAdd);
+		}
+		
+		numLabels = 2;
+		String label1 = this.labels.get(0);
+		String label2 = this.labels.get(1);
+		
+		// Set Instance's Label/Classification Values
+		if(labelValue.equals(label1)){
+			newInstance.labels.add(0, 1);
+			newInstance.labels.add(1, 0);
+		} else if(labelValue.equals(label2)) {
+			newInstance.labels.add(0, 0);
+			newInstance.labels.add(1, 1);
+		} else {
+			System.out.println("ERROR GETTING LABELS IN INPUTSET");
+			System.exit(-1);
+		}
+		
+		return newInstance;
 	}
 }
